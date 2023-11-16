@@ -1,0 +1,28 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Current File",
+            "request": "launch",
+            "mainClass": "${file}"
+        },
+        {
+            "type": "java",
+            "name": "ASP",
+            "request": "launch",
+            "mainClass": "fr.uga.pddl4j.examples.asp.ASP",
+            "projectName": "MonteCarloTreeSearch_bf826c45"
+        },
+        {
+            "type": "java",
+            "name": "MCTS",
+            "request": "launch",
+            "mainClass": "fr.uga.pddl4j.exercise.mcts.MCTS",
+            "projectName": "MonteCarloTreeSearch_bf826c45"
+        }
+    ]
+}
