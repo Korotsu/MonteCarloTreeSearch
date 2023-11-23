@@ -1,0 +1,1 @@
+domain=src/test/resources/benchmarks/pddl/ipc1998/gripper/adl/domain.pddl;pbIndex=13;planner=fr.uga.pddl4j.exercise.mcts.MCTS;planLength=138;timeSpent=9162.0;

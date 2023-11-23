@@ -241,7 +241,7 @@ public class MCTS extends AbstractPlanner {
     /**
      * The NUM_WALK property used for planner configuration.
      */
-    public static final String MAX_STEPS_SETTING = "NUM_WALK";
+    public static final String MAX_STEPS_SETTING = "MAX_STEPS";
 
     /**
      * The default value of the NUM_WALK property used for planner configuration.
@@ -255,6 +255,44 @@ public class MCTS extends AbstractPlanner {
      */
     public final int getMaxSteps() {
         return this.maxSteps;
+    }
+
+    /**
+     * Set the maximum time before the end of the search.
+     *
+     * @param maxSearchTime the maximum time before the end of the search.
+     */
+    @CommandLine.Option(names = {"-sT", "--searchTime"}, defaultValue = "600",
+        paramLabel = "<maxSearchTime>", description = "Set the maximum time before the end of the search in seconds (preset 600s)")
+    public void setMaxSearchTime(final long maxSearchTime) {
+        if (maxSearchTime <= 0L) {
+            throw new IllegalArgumentException("MaxSearchTime <= 0");
+        }
+        this.maxSearchTime = maxSearchTime;
+    }
+
+    /**
+     * The maximum time before the end of the search.
+     */
+    private long maxSearchTime;
+
+    /**
+     * The MAX_SEARCH_TIME property used for planner configuration.
+     */
+    public static final String MAX_SEARCH_TIME_SETTING = "MAX_SEARCH_TIME";
+
+    /**
+     * The default value of the MAX_SEARCH_TIME property used for planner configuration.
+     */
+    public static final long DEFAULT_MAX_SEARCH_TIME = 600L;
+
+    /**
+     * Returns the maximum time before the end of the search.
+     *
+     * @return the maximum time before the end of the search.
+     */
+    public final long getMaxSearchTime() {
+        return this.maxSearchTime;
     }
 
     /**
@@ -287,7 +325,10 @@ public class MCTS extends AbstractPlanner {
         if (plan != null) {
             LOGGER.info("* MCTS search succeeded\n");
             this.getStatistics().setTimeToSearch(end - begin);
+            final long totalTime = this.getStatistics().getTimeToEncode() + this.getStatistics().getTimeToParse() + this.getStatistics().getTimeToSearch();
+            LOGGER.info("STATS:TIME=" + totalTime + ";PLAN=" + plan.size() + ";");
         } else {
+            LOGGER.info("STATS:TIME=" + 0 + ";PLAN=" + 0 + ";");
             LOGGER.info("* MCTS search failed\n");
         }
         // Return the plan found or null if the search fails.
@@ -364,9 +405,11 @@ public class MCTS extends AbstractPlanner {
         Node currentLoopState = root; 
         double hmin = root.getHeuristic();
         List<Action> availableActions = problem.getActions();
-        
+        long startSearchTime = System.currentTimeMillis();
+        long currentSearchTime = System.currentTimeMillis();
+
         // Loop until we find a solution to the problem.
-        while (!currentLoopState.satisfy(goal)) {
+        while (!currentLoopState.satisfy(goal) && ((currentSearchTime - startSearchTime)/1000L < getMaxSearchTime())) {
             // Reset the current state and counter if we do too much steps or the state is in a dead-end.
             if (counter > this.getMaxSteps() || this.applicableActions(currentLoopState, availableActions).isEmpty()) {
                 currentLoopState = root;
@@ -383,9 +426,13 @@ public class MCTS extends AbstractPlanner {
             }
             else
                 counter++;
+            currentSearchTime = System.currentTimeMillis();
         }
 
         // Finally, we return the search computed or null if no search was found
+        if ((currentSearchTime - startSearchTime)/1000L >= getMaxSearchTime()) {
+            return null;
+        }
         return this.extractPlan(currentLoopState, problem);
     }
 
@@ -507,6 +554,7 @@ public class MCTS extends AbstractPlanner {
         config.setProperty(MCTS.NUM_WALK_SETTING, Integer.toString(this.getNumWalk()));
         config.setProperty(MCTS.LENGTH_WALK_SETTING, Integer.toString(this.getLengthWalk()));
         config.setProperty(MCTS.MAX_STEPS_SETTING, Integer.toString(this.getMaxSteps()));
+        config.setProperty(MCTS.MAX_SEARCH_TIME_SETTING, Long.toString(this.getMaxSearchTime()));
         return config;
     }
 
@@ -549,6 +597,12 @@ public class MCTS extends AbstractPlanner {
             this.setMaxSteps(Integer.parseInt(configuration.getProperty(
                 MCTS.MAX_STEPS_SETTING)));
         }
+        if (configuration.getProperty(MCTS.MAX_SEARCH_TIME_SETTING) == null) {
+            this.setMaxSearchTime(MCTS.DEFAULT_MAX_SEARCH_TIME);
+        } else {
+            this.setMaxSearchTime(Long.parseLong(configuration.getProperty(
+                MCTS.MAX_SEARCH_TIME_SETTING)));
+        }
     }
 
     /**
@@ -564,6 +618,7 @@ public class MCTS extends AbstractPlanner {
         config.setProperty(MCTS.NUM_WALK_SETTING, Integer.toString(MCTS.DEFAULT_NUM_WALK));
         config.setProperty(MCTS.LENGTH_WALK_SETTING, Integer.toString(MCTS.DEFAULT_LENGTH_WALK));
         config.setProperty(MCTS.MAX_STEPS_SETTING, Integer.toString(MCTS.DEFAULT_MAX_STEPS));
+        config.setProperty(MCTS.MAX_SEARCH_TIME_SETTING, Long.toString(MCTS.DEFAULT_MAX_SEARCH_TIME));
         return config;
     }
 
@@ -586,6 +641,7 @@ public class MCTS extends AbstractPlanner {
             && this.getHeuristic() != null
             && this.getNumWalk() > 0
             && this.getLengthWalk() > 0
-            && this.getMaxSteps() > 0;
+            && this.getMaxSteps() > 0
+            && this.getMaxSearchTime() > 0L;
     }
 }
