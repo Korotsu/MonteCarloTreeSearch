@@ -126,6 +126,9 @@ def benchmark(data: BenchData):
             result.timeSpent = float(stats.split("TIME=")[1].split(";")[0])
             result.planLength = int(stats.split("PLAN=")[1].split(";")[0])
             resultList.append(result)
+            if shouldSaveResult:
+                #Save the results.
+                save([result])
         except subprocess.CalledProcessError as e: 
             print(f"Command failed with return code {e.returncode}")
         counter += 1
@@ -298,9 +301,6 @@ def main():
         results = benchmark(bench)
         #Add the results to the graphDataList.
         graphDataList.extend(results)
-        if shouldSaveResult:
-            #Save the results.
-            save(results)
     
     #Load the requested benchmark data.
     load(loadList)
