@@ -103,7 +103,7 @@ def benchmark(data: BenchData):
     benchmarkFolder = data.domain.split("domain")[0]
     
     #Count bench files in the folder -1 to remove the domain file.
-    benchCount = len(os.listdir(benchmarkFolder)) - 1
+    benchCount = len(os.listdir(rootFolder + benchmarkFolder)) - 1
     powerOfTenCount = 0
     
     #Calculate the power of ten to format the counter of the benchmarkFile.
