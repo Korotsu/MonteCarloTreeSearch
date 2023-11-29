@@ -101,7 +101,18 @@ def benchmark(data: BenchData):
     """
     #Initialize all required data.
     benchmarkFolder = data.domain.split("domain")[0]
-    benchmarkFile = benchmarkFolder + "p{:02d}.pddl"
+    
+    #Count bench files in the folder -1 to remove the domain file.
+    benchCount = len(os.listdir(benchmarkFolder)) - 1
+    powerOfTenCount = 0
+    
+    #Calculate the power of ten to format the counter of the benchmarkFile.
+    while benchCount >= 1:
+        benchCount /= 10
+        powerOfTenCount += 1
+        
+    benchmarkFile = benchmarkFolder + "p{0}.pddl"
+    benchmarkFile = benchmarkFile.format("{:0" + str(powerOfTenCount) + "d}")
     counter = data.counterMin
     resultList = []
     print("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
