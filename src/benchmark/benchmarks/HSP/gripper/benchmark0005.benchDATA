@@ -1,0 +1,1 @@
+domain=src/test/resources/benchmarks/pddl/ipc1998/gripper/adl/domain.pddl;pbIndex=5;planner=fr.uga.pddl4j.planners.statespace.HSP;planLength=35;timeSpent=6031.0;

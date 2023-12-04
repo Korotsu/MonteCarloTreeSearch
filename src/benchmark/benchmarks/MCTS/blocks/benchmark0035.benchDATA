@@ -1,0 +1,1 @@
+domain=src/test/resources/benchmarks/pddl/ipc2000/blocks/strips-typed/domain.pddl;pbIndex=35;planner=fr.uga.pddl4j.exercise.mcts.MCTS;planLength=136;timeSpent=146614.0;
