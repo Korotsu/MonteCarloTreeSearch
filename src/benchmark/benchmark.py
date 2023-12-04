@@ -130,12 +130,13 @@ def benchmark(data: BenchData):
             print(ans)
             
             #Get the result of the benchmark 
-            if len(ans.split("STATS:")) <= 1:
-                counter += 1
-                continue
-            stats = ans.split("STATS:")[1]
-            result.timeSpent = float(stats.split("TIME=")[1].split(";")[0])
-            result.planLength = int(stats.split("PLAN=")[1].split(";")[0])
+            if len(ans.split("STATS:")) > 1:
+                stats = ans.split("STATS:")[1]
+                result.timeSpent = float(stats.split("TIME=")[1].split(";")[0])
+                result.planLength = int(stats.split("PLAN=")[1].split(";")[0])
+            else:
+                result.timeSpent = 0
+                result.planLength = 0
             resultList.append(result)
             if shouldSaveResult:
                 #Save the results.
@@ -227,10 +228,10 @@ def graph(param: GraphParam):
             #Initialize the sub-dictionnary if it didn't exist.
             if dataDict.get(dataPlanner) == None:
                 dataDict[dataPlanner] = {}
-            dataDict[dataPlanner][data.pbIndex] = data.getEvaluatedVar(param.evaluatedVar)
+            dataDict[dataPlanner][str(data.pbIndex)] = data.getEvaluatedVar(param.evaluatedVar)
             #Gather information to sort the x-axis.
             if dataPlanner == param.xAxisPlanner:
-                xpoints[data.pbIndex] = data.getEvaluatedVar(param.evaluatedVar)
+                xpoints[str(data.pbIndex)] = data.getEvaluatedVar(param.evaluatedVar)
     
     #Sort the x-axis data relative to the evaluated variable.
     sortedX = dict(sorted(xpoints.items(), key= lambda item: item[1]))
@@ -242,7 +243,7 @@ def graph(param: GraphParam):
         plt.plot(sortedX.keys(), tempYvalues, marker = 'o', label=planner)
     
     #Show the result.
-    plt.title("Benchmarks results")
+    plt.title("Benchmarks results for {0}".format(param.evaluatedDomain))
     plt.xlabel("Problem index")
     plt.legend(fancybox=True, framealpha=1, shadow=True, borderpad=1)
     plt.ylabel(param.evaluatedVar if param.evaluatedVar != "timeSpent" else param.evaluatedVar + " (seconds)")
