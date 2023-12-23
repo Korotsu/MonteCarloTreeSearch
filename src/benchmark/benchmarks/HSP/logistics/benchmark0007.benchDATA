@@ -1,0 +1,1 @@
+domain=src/test/resources/benchmarks/pddl/ipc1998/logistics/adl/domain.pddl;pbIndex=7;planner=fr.uga.pddl4j.planners.statespace.HSP;planLength=0;timeSpent=0;

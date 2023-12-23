@@ -1,0 +1,1 @@
+domain=src/test/resources/benchmarks/pddl/ipc2000/blocks/strips-typed/domain.pddl;pbIndex=16;planner=fr.uga.pddl4j.planners.statespace.HSP;planLength=30;timeSpent=3209.0;
