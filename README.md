@@ -44,3 +44,7 @@
 ## Installation
 
 Il suffit de clone le projet ainsi que d'avoir matplotlib à jour (installation possible via pip install matplotlib).
+
+## Resultats
+
+Les figures des résultats des benchmarks pour les 4 domaines (depots, logistics, gripper, blocks) dont stockées dans le dossier figures a la racine du projet et un document word les contiennent aussi.
